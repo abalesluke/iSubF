@@ -21,7 +21,8 @@ def clear():
 
 def default_wlist(args):
     wlist_name = args.get('-w')
-    if((wlist_name != True) or (wlist_name != None)):
+    # if((wlist_name != True) or (wlist_name != None)):
+    if(os.path.exists(wlist_name)):
         return wlist_name
 
     wlist_name = './Subdomain.txt'
@@ -102,11 +103,21 @@ class Finder:
                 os.remove(self.hostpath)
                 os.rename(self.hostbak, self.hostpath)
 
-    def modify_hosts(self):
+    def __modify_hosts(self):
         self.backup(0)
+        subdomains = open(self.wlist).read().splitlines()
+        domain_ip = get_dom_ip(self.target)
         host_file = open("/etc/hosts",'a')
+
         host_file.write("\n#iSubF modifications\n")
-        self.backup(1)
+        for subdomain in subdomains:
+            host_file.write(f"{domain_ip}   {subdomain}.{self.target}\n")
+        host_file.close()
+
+    def find(self):
+        self.modify_hosts()
+        for domain in open(self.wlist).read().splitlines():
+            domain = f"{domain}.{self.target}"
     
 
 if(__name__=="__main__"):
@@ -130,5 +141,5 @@ if(__name__=="__main__"):
         print("Please this script as root!")
         os._exit(0)
     subFinder = Finder(args.get('-d'), wordlist_path)
-    subFinder.modify_hosts()
+    subFinder.find()
 

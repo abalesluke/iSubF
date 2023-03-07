@@ -1,7 +1,7 @@
 try:
     import os, sys
     import requests
-    import platformz
+    import platform
     import threading
     from shutil import copyfile as cpf
     from socket import gethostbyname as get_dom_ip
@@ -50,6 +50,18 @@ Usage: python3 {os.path.basename(__file__)} -s <self> -t <target>
 Example: python3 {os.path.basename(__file__)} -s 127.0.0.1 -t 127.0.0.2
 """)
 
+class FoxParse:
+    def parse_args():
+        num = 0
+        for arg in sys.argv[1:]:
+            num+=1
+            if((num % 2) == 1):
+                print(arg)
+
+    def set_args():
+        pass
+
+
 class Finder:
     def __init__(self,target, wpath):
         self.target = target
@@ -77,10 +89,11 @@ class Finder:
 
 
 if(__name__=="__main__"):
+    FoxParse.parse_args()
+    exit(0)
     clear()
     if(os.getuid() != 0):
         print("Please this script as root!")
         os._exit(0)
     subFinder = Finder(domain, wordlist_path)
     subFinder.modify_hosts()
-

@@ -127,12 +127,20 @@ class Finder:
             pass
 
     def find(self):
-        print("Finding..\n"+"="*20)
         self.__modify_hosts()
         # self.__backup(1)
+        # exit(0)
         main_page = len(requests.get(f'http://{self.target}').content)
+        threads = []
+        print("Adding threads..\n"+"="*20)
         for domain in open(self.wlist).read().splitlines():
-            threading.Thread(target=self.__brute, args=[main_page, domain]).start()
+            new_thread = threading.Thread(target=self.__brute, args=[main_page, domain])
+            new_thread.daemon = True
+            threads.append(new_thread)
+        print("Finding..\n"+"="*20)
+        for thread in threads:
+            thread.start()
+
         # self.__backup(1)
     
 

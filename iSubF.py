@@ -115,19 +115,23 @@ class Finder:
         host_file.close()
 
     def find(self):
+        print("Finding..\n"+"="*20)
         self.__modify_hosts()
         # self.__backup(1)
+        main_page = len(requests.get(f'http://{self.target}').content)
         for domain in open(self.wlist).read().splitlines():
             url = f"http://{domain}.{self.target}"
             try:
                 r = requests.get(url)
-                status = r.status_code
-                if(status != 404):
-                    print(f"[{status}]: {domain}.{self.target}")
+                if(len(r.content) != main_page):
+                    print(f"[Live]: {domain}.{self.target}")
             except KeyboardInterrupt:
+                self.__backup(1)
                 os._exit(0)
             except:
                 pass
+
+        self.__backup(1)
     
 
 if(__name__=="__main__"):

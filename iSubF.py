@@ -70,12 +70,11 @@ class FoxParse:
                     continue
                 self.__parser(num, arg)
 
-        return self.args
-
     def set_args(self, arg):
         arg_val = self.args.get(arg)
         self.new_args[arg] = arg_val
-        return self.new_args
+    
+    def get_args(self)->exec:return self.new_args
 
 
 
@@ -108,8 +107,8 @@ class Finder:
 if(__name__=="__main__"):
     parser = FoxParse()
     parser.parse_args()
-    x=parser.set_args('-s')
-    print(x)
+    args = parser.get_args()
+    print(args)
     exit(0)
     clear()
     if(os.getuid() != 0):

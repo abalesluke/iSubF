@@ -17,6 +17,7 @@ def clear():
     if(platform.system() == "Windows"):
         print("Sorry this script only runs in linux systems!")
         os._exit(0)
+        # This feature is coming soon! But if you wish to contribute to this part, feel free to do so.!
     else:
         os.system("clear")
 
@@ -78,8 +79,6 @@ class Finder:
 
 
 if(__name__=="__main__"):
-    wlist_dl()
-    exit()
     clear()
     if(os.getuid() != 0):
         print("Please this script as root!")

@@ -72,10 +72,10 @@ class FoxParse:
 
     def set_args(self, arg):
         arg_val = self.args.get(arg)
-        self.new_args[arg] = arg_val
+        if(arg_val != None):
+            self.new_args[arg] = arg_val
     
-    def get_args(self)->exec:return self.new_args
-
+    def get_args(self)->exec:return (self.new_args if(bool(self.new_args)) else 0) # 0 means dictionary is empty
 
 
 class Finder:
@@ -107,6 +107,8 @@ class Finder:
 if(__name__=="__main__"):
     parser = FoxParse()
     parser.parse_args()
+    parser.set_args('-t')
+    parser.set_args('-d')
     args = parser.get_args()
     print(args)
     exit(0)

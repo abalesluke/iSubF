@@ -1,14 +1,12 @@
 try:
     import os, sys
     import requests
-    import platform
+    import platformz
     import threading
     from shutil import copyfile as cpf
     from socket import gethostbyname as get_dom_ip
 except ImportError or ModuleNotFoundError as mod_err:
-    modz_filter = []
-    modz_filter.append(mod_err)
-    mod_name = str(modz_filter[0]).replace('No module named ','')
+    mod_name = str(mod_err).replace('No module named ','')
     print("Error! Please Install Required Modules!\nRequired Module: {}".format(mod_name.replace("'",'')))
     exit()
 

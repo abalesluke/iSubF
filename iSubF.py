@@ -13,15 +13,14 @@ except ImportError or ModuleNotFoundError as mod_err:
 
 def clear():
     if(platform.system() == "Windows"):
+        # This feature is coming soon! But if you wish to contribute to this part, feel free to do so.!
         print("Sorry this script only runs in linux systems!")
         os._exit(0)
-        # This feature is coming soon! But if you wish to contribute to this part, feel free to do so.!
     else:
         os.system("clear")
 
 def default_wlist(args):
     wlist_name = args.get('-w')
-    # if((wlist_name != True) or (wlist_name != None)):
     if(os.path.exists(wlist_name)):
         return wlist_name
 

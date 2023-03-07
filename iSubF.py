@@ -53,6 +53,7 @@ Example: python3 {os.path.basename(__file__)} -s 127.0.0.1 -t 127.0.0.2
 class FoxParse:
     def __init__(self):
         self.args = {}
+        self.new_args = {}
 
     def parser(self, num, arg):
         try:
@@ -69,10 +70,13 @@ class FoxParse:
                     continue
                 self.parser(num, arg)
 
-        print(self.args)
+        return self.args
 
-    def set_args():
-        pass
+    def set_args(self, arg):
+        arg_val = self.args.get(arg)
+        self.new_args[arg] = arg_val
+        return self.new_args
+
 
 
 class Finder:
@@ -102,7 +106,10 @@ class Finder:
 
 
 if(__name__=="__main__"):
-    FoxParse().parse_args()
+    parser = FoxParse()
+    parser.parse_args()
+    x=parser.set_args('-s')
+    print(x)
     exit(0)
     clear()
     if(os.getuid() != 0):

@@ -91,7 +91,7 @@ class Finder:
         self.hostpath = '/etc/hosts'
         self.hostbak = self.hostpath+'.iSubF.bak'
 
-    def backup(self, status):
+    def __backup(self, status):
         # 0 = backup the current hosts file
         # 1 = restore backup.
         pathExist = os.path.exists(self.hostbak)
@@ -104,7 +104,7 @@ class Finder:
                 os.rename(self.hostbak, self.hostpath)
 
     def __modify_hosts(self):
-        self.backup(0)
+        self.__backup(0)
         subdomains = open(self.wlist).read().splitlines()
         domain_ip = get_dom_ip(self.target)
         host_file = open("/etc/hosts",'a')
@@ -116,6 +116,7 @@ class Finder:
 
     def find(self):
         self.__modify_hosts()
+        # self.__backup(1)
         for domain in open(self.wlist).read().splitlines():
             url = f"http://{domain}.{self.target}"
             try:

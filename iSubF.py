@@ -1,9 +1,9 @@
 try:
     import os, sys
     import requests
-    import platform
     import threading
     from shutil import copyfile as cpf
+    from platform import system as my_system
     from socket import gethostbyname as get_dom_ip
 except ImportError or ModuleNotFoundError as mod_err:
     mod_name = str(mod_err).replace('No module named ','')
@@ -12,8 +12,10 @@ except ImportError or ModuleNotFoundError as mod_err:
 
 
 def clear():
-    if(platform.system() == "Windows"):
-        # This feature is coming soon! But if you wish to contribute to this part, feel free to do so.!
+    # This windows feature is coming soon! 
+    # But if you wish to contribute to this part
+    # feel free to do so.!
+    if(my_system == "Windows"):
         print("Sorry this script only runs in linux systems!")
         os._exit(0)
     else:
@@ -26,22 +28,19 @@ def default_wlist(args):
 
     wlist_name = './Subdomain.txt'
     if(not os.path.exists(wlist_name)):
-        wlist_url = 'https://raw.githubusercontent.com/danTaler/WordLists/master/Subdomain.txt'
+        wlist_url = 'https://raw.githubusercontent.com'
+        wlist_url+= '/danTaler/WordLists/master'
+        wlist_url+= '/Subdomain.txt'
         open('Subdomain.txt','wb').write(requests.get(wlist_url).content)
     return wlist_name
 
-def run(call): # for future use
-    banner()
-    threading.Thread(target=call).start()
-
 def banner():
     clear()
-    print("""
-================================
- HackTheBox SubBrute
- By: Anikin Luke
-================================
-""")
+    banner = "================================"
+    banner+= "HackTheBox SubBrute"
+    banner+= "By: Anikin Luke"
+    banner+= "================================"
+    print(banner)
 
 def help(err_msg=''):
     banner()
@@ -89,36 +88,43 @@ class Finder:
         self.wlist = wpath
         self.hostpath = '/etc/hosts'
         self.hostbak = self.hostpath+'.iSubF.bak'
+        self.main = len(requests.get(f'http://{target}').content)
 
     def __backup(self, status):
         # 0 = backup the current hosts file
         # 1 = restore backup.
-        pathExist = os.path.exists(self.hostbak)
+        hosts_b = self.hostbak
+        hosts_p = self.hostpath
+        pathExist = os.path.exists(hosts_b)
         if(status == 0):
             if(pathExist == False):
-                cpf(self.hostpath, self.hostbak)
+                cpf(hosts_p, hosts_b)
         elif(status == 1):
             if(pathExist):
-                os.remove(self.hostpath)
-                os.rename(self.hostbak, self.hostpath)
+                os.remove(hosts_p)
+                os.rename(hosts_b, hosts_p)
 
     def __modify_hosts(self):
         self.__backup(0)
-        subdomains = open(self.wlist).read().splitlines()
+        subdomains = open(self.wlist)
+        subdomains = subdomains.read()
+        subdomains = subdomains.splitlines()
         domain_ip = get_dom_ip(self.target)
         host_file = open("/etc/hosts",'a')
-
         host_file.write("\n#iSubF modifications\n")
         for subdomain in subdomains:
-            host_file.write(f"{domain_ip}   {subdomain}.{self.target}\n")
+            host = f"{domain_ip}\t"
+            host+= f"{subdomain}."
+            host+= f"{self.target}\n"
+            host_file.write(host)
+
         host_file.close()
 
-    def __brute(self,main_page, domain):
-        url = f"http://{domain}.{self.target}"
+    def __brute(self,main_page, domain, target):
         try:
-            r = requests.get(url)
+            r = requests.get(f"http://{domain}.{target}")
             if(len(r.content) != main_page):
-                print(f"[Live]: {domain}.{self.target}")
+                print(f"[Live]: {domain}.{target}")
         except KeyboardInterrupt:
             self.__backup(1)
             os._exit(0)
@@ -126,21 +132,20 @@ class Finder:
             pass
 
     def find(self):
-        self.__modify_hosts()
-        # self.__backup(1)
-        # exit(0)
-        main_page = len(requests.get(f'http://{self.target}').content)
         threads = []
-        print("Adding threads..\n"+"="*20)
+        self.__modify_hosts()
+        target = self.target
+        main_page = self.main
+        print("Adding threads.")
         for domain in open(self.wlist).read().splitlines():
-            new_thread = threading.Thread(target=self.__brute, args=[main_page, domain])
+            new_thread = threading.Thread(target=self.__brute, args=[main_page, domain, target])
             new_thread.daemon = True
             threads.append(new_thread)
         print("Finding..\n"+"="*20)
         for thread in threads:
             thread.start()
 
-        # self.__backup(1)
+        self.__backup(1)
     
 
 if(__name__=="__main__"):
@@ -165,4 +170,3 @@ if(__name__=="__main__"):
         os._exit(0)
     subFinder = Finder(args.get('-d'), wordlist_path)
     subFinder.find()
-

@@ -1,4 +1,4 @@
-# # iSuBF 
+# # iSubF 
 I created these tool specifically for the HacktheBox CTF platform. I once encountered a machine that took me a long time to find subdomains, as most of the tools I know, such as Sublist3r, didn't work on that machine.
 
 This program is a tool for finding subdomains of the target domain. It uses a wordlist to search for the subdomains and lists the live subdomains of the target domain.

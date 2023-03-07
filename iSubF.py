@@ -31,7 +31,7 @@ def default_wlist(args):
         open('Subdomain.txt','wb').write(requests.get(wlist_url).content)
     return wlist_name
 
-def run(call):
+def run(call): # for future use
     banner()
     threading.Thread(target=call).start()
 
@@ -114,24 +114,26 @@ class Finder:
             host_file.write(f"{domain_ip}   {subdomain}.{self.target}\n")
         host_file.close()
 
+    def __brute(self,main_page, domain):
+        url = f"http://{domain}.{self.target}"
+        try:
+            r = requests.get(url)
+            if(len(r.content) != main_page):
+                print(f"[Live]: {domain}.{self.target}")
+        except KeyboardInterrupt:
+            self.__backup(1)
+            os._exit(0)
+        except:
+            pass
+
     def find(self):
         print("Finding..\n"+"="*20)
         self.__modify_hosts()
         # self.__backup(1)
         main_page = len(requests.get(f'http://{self.target}').content)
         for domain in open(self.wlist).read().splitlines():
-            url = f"http://{domain}.{self.target}"
-            try:
-                r = requests.get(url)
-                if(len(r.content) != main_page):
-                    print(f"[Live]: {domain}.{self.target}")
-            except KeyboardInterrupt:
-                self.__backup(1)
-                os._exit(0)
-            except:
-                pass
-
-        self.__backup(1)
+            threading.Thread(target=self.__brute, args=[main_page, domain]).start()
+        # self.__backup(1)
     
 
 if(__name__=="__main__"):

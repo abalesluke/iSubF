@@ -19,7 +19,11 @@ def clear():
     else:
         os.system("clear")
 
-def default_wlist():
+def default_wlist(args):
+    wlist_name = args.get('-w')
+    if((wlist_name != True) or (wlist_name != None)):
+        return wlist_name
+
     wlist_name = './Subdomain.txt'
     if(not os.path.exists(wlist_name)):
         wlist_url = 'https://raw.githubusercontent.com/danTaler/WordLists/master/Subdomain.txt'
@@ -39,16 +43,17 @@ def banner():
 ================================
 """)
 
-def help():
+def help(err_msg=''):
     banner()
     print(f"""
 Required Arguments:
-    -t, --target       : Target ip
-    -d, --domain       : Domain
+________________________________
+    -d       |     : Domain Name
+    -w       |     : Wordlist Path
 
-Usage: python3 {os.path.basename(__file__)} -s <self> -t <target>
-Example: python3 {os.path.basename(__file__)} -s 127.0.0.1 -t 127.0.0.2
-""")
+Usage: python3 {os.path.basename(__file__)} -d <self> -w <target>
+Example: python3 {os.path.basename(__file__)} -d example.com -w /usr/share/wordlists/Subdomain.txt
+\n{err_msg}""")
 
 class FoxParse:
     def __init__(self):
@@ -102,20 +107,28 @@ class Finder:
         host_file = open("/etc/hosts",'a')
         host_file.write("\n#iSubF modifications\n")
         self.backup(1)
-
+    
 
 if(__name__=="__main__"):
+    clear()
     parser = FoxParse()
     parser.parse_args()
     parser.set_args('-t')
     parser.set_args('-d')
+    parser.set_args('-w')
     args = parser.get_args()
-    print(args)
-    exit(0)
-    clear()
+    if(args == 0):
+        help()
+        exit(0)
+    elif((args.get('-d') == True) or (args.get('-d') == None)):
+        help("[ERROR]: '-d' argument is required, please specify your target domain!")
+        exit(0)
+        
+    wordlist_path = default_wlist(args)
+
     if(os.getuid() != 0):
         print("Please this script as root!")
         os._exit(0)
-    subFinder = Finder(domain, wordlist_path)
+    subFinder = Finder(args.get('-d'), wordlist_path)
     subFinder.modify_hosts()
 

@@ -4,6 +4,7 @@ try:
     import platform
     import threading
     from shutil import copyfile as cpf
+    from socket import gethostbyname as get_dom_ip
 except ImportError or ModuleNotFoundError as mod_err:
     modz_filter = []
     modz_filter.append(mod_err)
@@ -18,6 +19,13 @@ def clear():
         os._exit(0)
     else:
         os.system("clear")
+
+def default_wlist():
+    wlist_name = './Subdomain.txt'
+    if(not os.path.exists(wlist_name)):
+        wlist_url = 'https://raw.githubusercontent.com/danTaler/WordLists/master/Subdomain.txt'
+        open('Subdomain.txt','wb').write(requests.get(wlist_url).content)
+    return wlist_name
 
 def run(call):
     banner()
@@ -37,6 +45,7 @@ def help():
     print(f"""
 Required Arguments:
     -t, --target       : Target ip
+    -d, --domain       : Domain
 
 Usage: python3 {os.path.basename(__file__)} -s <self> -t <target>
 Example: python3 {os.path.basename(__file__)} -s 127.0.0.1 -t 127.0.0.2
@@ -67,12 +76,14 @@ class Finder:
         host_file.write("\n#iSubF modifications\n")
         self.backup(1)
 
+
 if(__name__=="__main__"):
+    wlist_dl()
+    exit()
     clear()
     if(os.getuid() != 0):
         print("Please this script as root!")
         os._exit(0)
-    subFinder = Finder(1,2)
+    subFinder = Finder(domain, wordlist_path)
     subFinder.modify_hosts()
-
 

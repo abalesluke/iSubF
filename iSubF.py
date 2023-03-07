@@ -36,9 +36,9 @@ def default_wlist(args):
 
 def banner():
     clear()
-    banner = "================================"
-    banner+= "HackTheBox SubBrute"
-    banner+= "By: Anikin Luke"
+    banner = "================================\n"
+    banner+= "\tHackTheBox SubBrute\n"
+    banner+= "\tBy: Anikin Luke\n"
     banner+= "================================"
     print(banner)
 

@@ -51,12 +51,17 @@ Example: python3 {os.path.basename(__file__)} -s 127.0.0.1 -t 127.0.0.2
 """)
 
 class FoxParse:
-    def parse_args():
+    def __init__(self):
+        self.args = {}
+
+    def parse_args(self):
         num = 0
         for arg in sys.argv[1:]:
             num+=1
             if((num % 2) == 1):
-                print(arg)
+                self.args[arg] = sys.argv[(num+1)]
+
+        print(self.args)
 
     def set_args():
         pass
@@ -89,7 +94,7 @@ class Finder:
 
 
 if(__name__=="__main__"):
-    FoxParse.parse_args()
+    FoxParse().parse_args()
     exit(0)
     clear()
     if(os.getuid() != 0):

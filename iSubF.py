@@ -55,7 +55,7 @@ class FoxParse:
         self.args = {}
         self.new_args = {}
 
-    def parser(self, num, arg):
+    def __parser(self, num, arg):
         try:
             self.args[arg] = sys.argv[(num+1)]
         except IndexError:
@@ -68,7 +68,7 @@ class FoxParse:
             if((num % 2) == 1):
                 if(not arg.startswith('-')):
                     continue
-                self.parser(num, arg)
+                self.__parser(num, arg)
 
         return self.args
 

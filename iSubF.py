@@ -54,12 +54,18 @@ class FoxParse:
     def __init__(self):
         self.args = {}
 
+    def parser(self, num, arg):
+        if((num % 2) == 1):
+            try:
+                self.args[arg] = sys.argv[(num+1)]
+            except IndexError:
+                self.args[arg] = True
+
     def parse_args(self):
         num = 0
         for arg in sys.argv[1:]:
             num+=1
-            if((num % 2) == 1):
-                self.args[arg] = sys.argv[(num+1)]
+            self.parser(num, arg)
 
         print(self.args)
 
@@ -102,3 +108,4 @@ if(__name__=="__main__"):
         os._exit(0)
     subFinder = Finder(domain, wordlist_path)
     subFinder.modify_hosts()
+
